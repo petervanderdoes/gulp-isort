@@ -1,6 +1,6 @@
 {
   "name": "@petervanderdoes/gulp-isort",
-  "version": "1.0.1-rc.1",
+  "version": "1.0.1",
   "description": "Gulp plugin for Isort.",
   "main": "src/index.js",
   "homepage": "http://github.com/petervanderdoes/gulp-isort",

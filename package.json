@@ -1,0 +1,50 @@
+{
+  "name": "gulp-isort",
+  "version": "1.0.0",
+  "description": "Gulp plugin for Isort.",
+  "main": "src/index.js",
+  "homepage": "http://github.com/petervanderdoes/gulp-isort",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/petervanderdoes/gulp-isort"
+  },
+  "bugs": {
+    "url": "https://github.com/petervanderdoes/gulp-isort/issues"
+  },
+  "author": {
+    "name": "Peter van der Does",
+    "email": "peter@avirtualhome.com"
+  },
+  "keywords": [
+    "gulp",
+    "gulpplugin",
+    "python",
+    "lint",
+    "isort"
+  ],
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "event-stream": "^3.3.4",
+    "gulp-util": "^3.0.8",
+    "map-stream": "^0.0.7",
+    "through2": "^2.0.3"
+  },
+  "devDependencies": {
+    "coveralls": "^2.13.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-plugin-import": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "semistandard": "^10.0.0",
+    "should": "^11.2.1",
+    "vinyl": "^2.0.1"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 0.11"
+  },
+  "license": "MIT"
+}

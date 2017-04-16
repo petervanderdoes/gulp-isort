@@ -1,6 +1,19 @@
+[license]: /LICENSE
+[npm-image]: https://img.shields.io/npm/v/@petervanderdoes/gulp-isort.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@petervanderdoes/gulp-isort
+[downloads-image]: https://img.shields.io/npm/dm/@petervanderdoes/gulp-isort.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/@petervanderdoes/gulp-isort
+[semi-image]: https://img.shields.io/badge/code%20style-strict-brightgreen.svg?style=flat-square
+[semi-url]: https://github.com/Flet/semistandard
+[license-image]: https://img.shields.io/github/license/petervanderdoes/gulp-isort.svg?style=flat-square
+[license-url]: /LICENSE
+[dependencies-image]: https://david-dm.org/petervanderdoes/gulp-isort.svg?style=flat-square
+[dependencies-url]: https://david-dm.org/petervanderdoes/gulp-isort
+[dev-dependencies-image]: https://david-dm.org/petervanderdoes/gulp-isort/dev-status.svg?style=flat-square
+[dev-dependencies-url]: https://david-dm.org/petervanderdoes/gulp-isort#info=devDependencies
+
 # Gulp Isort
 
-[![travis][travis-image]][travis-url]
 [![npm][npm-image]][npm-url]
 [![downloads][downloads-image]][downloads-url]
 [![js-semistandard-style][semi-image]][semi-url]
@@ -143,17 +156,3 @@ gulp.task('lint', function() {
 ```
 
 See `src/reports.js` for more detailed examples.
-
-[license]: /LICENSE
-[npm-image]: https://img.shields.io/npm/v/gulp-isort.svg?style=flat-square
-[npm-url]: https://npmjs.org/packge/gulp-isort
-[downloads-image]: https://img.shields.io/npm/dm/gulp-isort.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/gulp-isort
-[semi-image]: https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square
-[semi-url]: https://github.com/Flet/semistandard
-[license-image]: https://img.shields.io/github/license/petervanderdoes/gulp-isort.svg?style=flat-square
-[license-url]: /LICENSE
-[dependencies-image]: https://david-dm.org/petervanderdoes/gulp-isort.svg?style=flat-square
-[dependencies-url]: https://david-dm.org/petervanderdoes/gulp-isort
-[dev-dependencies-image]: https://david-dm.org/petervanderdoes/gulp-isort/dev-status.svg?style=flat-square
-[dev-dependencies-url]: https://david-dm.org/petervanderdoes/gulp-isort#info=devDependencies

@@ -58,14 +58,15 @@ gulp.task('isort', function () {
 ##### format
 Type: `String`
 
-The format of the report. The plugin comes with two build-in options:
-- original
+The format of the report. The plugin comes with three build-in options:
+- default
 - fancy
+- verbose
 
-Default is `original`
+Default is `default`
 
-###### original
-The same format like `gulpIsort`
+###### default
+Only display errors.
 
 Example:
 ```javascript
@@ -84,7 +85,7 @@ wger/exercises/views/equipment.py:  Imports are incorrectly sorted.
 ```
 
 ###### fancy
-A colored output and if a file has multiple errors, the filename is only 
+A colored output which displays error only. If a file has multiple errors, the filename is only 
 displayed on the first error.
 
 Example:
@@ -92,6 +93,24 @@ Example:
 stuff
   .pipe(gulpIsort())
   .pipe(gulpIsort.reporter('fancy'))
+```
+Example output:
+
+```
+manage.py:  Imports are incorrectly sorted.
+wger/exercises/views/categories.py:  Imports are incorrectly sorted.
+wger/exercises/views/comments.py:  Imports are incorrectly sorted.
+wger/exercises/views/equipment.py:  Imports are incorrectly sorted.
+```
+
+###### verbose
+Displays all messages from isort but gulp only stops linting if there are isort errors.
+
+Example:
+```javascript
+stuff
+  .pipe(gulpIsort())
+  .pipe(gulpIsort.reporter('verbose'))
 ```
 Example output:
 
@@ -120,14 +139,20 @@ The following properties are set to the result object:
 
 ```javascript
   result.gulpIsort.success = true; // or false
-  result.gulpIsort.errorCount = 0; // number of errors returned by gulpIsort
-  result.gulpIsort.errorList = []; // gulpIsort errors
+  result.gulpIsort.errorCount = 0; // number of errors returned by isort
+  result.gulpIsort.errorList = []; // isort errors
+  result.gulpIsort.infoList = []; // isort messages and warnings
 ```
 
-The objects in `errorList` all have the following properties
+The objects in `errorList` and `infoList` all have the following properties
 
 ```javascript
 result.gulpIsort.errorList = [{
+  'filename': 'full path of the filename',
+  'reason': 'a description of the error'
+}]
+
+result.gulpIsort.infoList = [{
   'filename': 'full path of the filename',
   'reason': 'a description of the error'
 }]

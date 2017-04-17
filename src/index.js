@@ -1,6 +1,5 @@
 // noinspection Eslint
 
-
 const gulpUtil = require('gulp-util');
 const through = require('through2');
 const spawn = require('child_process').spawn;
@@ -12,32 +11,56 @@ const PLUGIN_NAME = 'gulp-isort';
 const COMMAND_NOT_FOUND = 127;
 
 const formatOutput = (result) => {
-  const errors = result.toString().split('\n');
-  if (!errors || !errors.length) {
+  const isortOutput = result.toString().split('\n');
+  if (!isortOutput || !isortOutput.length) {
     return {
       success: true,
     };
   }
   const allErrors = [];
-  // ERROR: /d1/development/python/wger/source/manage.py Imports are incorrectly sorted.
+  const allInfo = [];
+  // ERROR: <filename> Imports are incorrectly sorted.
+  // <filename>: Everything Looks Good!
+  // <filename>: was skipped as it's listed in 'skip' setting or
+  //             matches a glob in 'skip_glob' setting
   // Skipped 64 files
-  errors.forEach((error) => {
-    if (error.length !== 0) {
-      const firstSpace = error.indexOf(' ');
-      const secondSpace = error.indexOf(' ', firstSpace + 1);
-      const errorObject = {};
-      console.log(error.slice(0, firstSpace));
-      if (error.slice(0, firstSpace) !== 'Skipped') {
-        errorObject.filename = error.slice(0, firstSpace);
-        errorObject.reason = error.slice(secondSpace);
+  isortOutput.forEach((line) => {
+    if (line.length !== 0) {
+      const firstSpace = line.indexOf(' ');
+      const secondSpace = line.indexOf(' ', firstSpace + 1);
+      const detailObject = {};
+      const firstWord = line.slice(0, firstSpace);
+      switch (firstWord) {
+        case 'ERROR:':
+          detailObject.filename = line.slice(firstSpace, secondSpace).concat(':');
+          detailObject.reason = line.slice(secondSpace);
+          allErrors.push(detailObject);
+          break;
+        case 'Skipped':
+          detailObject.filename = '';
+          detailObject.reason = line;
+          allInfo.push(detailObject);
+          break;
+        case 'SUCCESS:':
+          detailObject.filename = line.slice(firstSpace, secondSpace).concat(':');
+          detailObject.reason = line.slice(secondSpace);
+          allInfo.push(detailObject);
+          break;
+        case 'WARNING:':
+          detailObject.filename = line.slice(firstSpace, secondSpace).concat(':');
+          detailObject.reason = line.slice(secondSpace);
+          allInfo.push(detailObject);
+          break;
+        default:
+          break;
       }
-      allErrors.push(errorObject);
     }
   });
   return {
     success: allErrors.length === 0,
     errorCount: allErrors.length,
     errorList: allErrors,
+    infoList: allInfo,
   };
 };
 
@@ -54,7 +77,7 @@ const gulpIsort = (paramOptions) => {
 
   let stream;
   const files = [];
-  let isortErrors = '';
+  let isortOutput = '';
 
   args = args.concat(bin.split(/\s/));
 
@@ -66,6 +89,7 @@ const gulpIsort = (paramOptions) => {
   // Flake8 exists with non zero if it finds a lint error.
   // args.push('--exit-zero');
   args.push(('--check-only'));
+  args.push(('-vb'));
 
   /**
    * If code is non-zero and does not represent a lint error,
@@ -131,8 +155,8 @@ const gulpIsort = (paramOptions) => {
     filePaths.sort();
     const lint = spawnIsort(filePaths);
     lint.stdout.on('data', (data) => {
-      isortErrors += data;
-      return isortErrors;
+      isortOutput += data;
+      return isortOutput;
     });
 
     // Handle spawn errors
@@ -148,7 +172,7 @@ const gulpIsort = (paramOptions) => {
         stream.emit('error', execError);
       } else {
         const result = {};
-        result.isort = formatOutput(isortErrors);
+        result.isort = formatOutput(isortOutput);
         stream.emit('data', result);
         stream.emit('end');
       }
@@ -160,16 +184,15 @@ const gulpIsort = (paramOptions) => {
   return stream;
 };
 
-gulpIsort.failAfterError = () => through.obj((result, enc, cb) => {
+gulpIsort.failAfterError = () => through.obj((result, enc, callback) => {
   const count = result.isort.errorCount;
   if (!count) {
-    cb(null, result);
+    callback(null, result);
     return;
   }
-  cb(new gulpUtil.PluginError(
-    'gulp-isort',
+  callback(new gulpUtil.PluginError('gulp-isort',
     {
-      name: 'isortError-dev',
+      name: 'isortError',
       message: `Failed with ${count}${(count === 1 ? ' error' : ' errors')}`,
     }
   ));

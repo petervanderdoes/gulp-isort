@@ -8,7 +8,7 @@ const map = require('map-stream');
 // Consts
 const PLUGIN_NAME = 'gulp-isort';
 
-exports.fancyReporter = (result) => {
+const fancyReporter = (result) => {
   const cwd = process.cwd();
   let filenamePrevious = '';
   let filenamePrint = '';
@@ -27,12 +27,29 @@ exports.fancyReporter = (result) => {
   });
 };
 
-exports.originalReporter = (result) => {
+const defaultReporter = (result) => {
   const cwd = process.cwd();
   result.isort.errorList.forEach((error) => {
     const filenamePrint = error.filename.replace(`${cwd}/`, '');
 
-    const msg = `${filenamePrint}: ${error.reason}`;
+    const msg = `${filenamePrint} ${error.reason}`;
+    gulpUtil.log(msg);
+  });
+};
+
+const verboseReporter = (result) => {
+  const cwd = process.cwd();
+  result.isort.errorList.forEach((error) => {
+    const filenamePrint = error.filename.replace(`${cwd}/`, '');
+
+    const msg = `${filenamePrint} ${error.reason}`;
+    gulpUtil.log(msg);
+  });
+
+  result.isort.infoList.forEach((info) => {
+    const filenamePrint = info.filename.replace(`${cwd}/`, '');
+
+    const msg = `${filenamePrint} ${info.reason}`;
     gulpUtil.log(msg);
   });
 };
@@ -44,24 +61,23 @@ exports.originalReporter = (result) => {
  *    Optional, defaults to defaultReporter.
  */
 exports.reporter = (paramReporter) => {
-  let reporter = paramReporter;
-  if (!reporter || reporter === 'default' || reporter === 'original') {
-    reporter = exports.originalReporter;
-  }
-
-  if (reporter === 'fancy') {
-    reporter = exports.fancyReporter;
-  }
-
-  if (typeof reporter === 'undefined') {
-    throw new gulpUtil.PluginError(PLUGIN_NAME, `Invalid reporter ${reporter}`);
+  let reportFormat = paramReporter;
+  switch (reportFormat) {
+    case 'fancy':
+      reportFormat = fancyReporter;
+      break;
+    case 'verbose':
+      reportFormat = verboseReporter;
+      break;
+    default:
+      reportFormat = defaultReporter;
   }
 
   return map((result, cb) => {
     // Only report if isort was run and errors were found
     let error;
-    if (result.isort && !result.isort.success) {
-      error = reporter(result);
+    if (result.isort) {
+      error = reportFormat(result);
     }
 
     return cb(error, result);

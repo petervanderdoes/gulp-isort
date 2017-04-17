@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-#### 1.1.0-rc.1
+#### 1.1.0
 [Peter van der Does][petervanderdoes]
 * Bugfix: When files are skipped the linting process errors.
 * Add new reporter capability called `verbose`

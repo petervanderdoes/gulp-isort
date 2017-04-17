@@ -1,5 +1,5 @@
 // noinspection Eslint
-'use strict';
+
 
 const gulpUtil = require('gulp-util');
 const through = require('through2');
@@ -20,13 +20,17 @@ const formatOutput = (result) => {
   }
   const allErrors = [];
   // ERROR: /d1/development/python/wger/source/manage.py Imports are incorrectly sorted.
+  // Skipped 64 files
   errors.forEach((error) => {
     if (error.length !== 0) {
       const firstSpace = error.indexOf(' ');
       const secondSpace = error.indexOf(' ', firstSpace + 1);
       const errorObject = {};
-      errorObject.filename = error.slice(firstSpace, secondSpace);
-      errorObject.reason = error.slice(secondSpace)
+      console.log(error.slice(0, firstSpace));
+      if (error.slice(0, firstSpace) !== 'Skipped') {
+        errorObject.filename = error.slice(0, firstSpace);
+        errorObject.reason = error.slice(secondSpace);
+      }
       allErrors.push(errorObject);
     }
   });
@@ -74,10 +78,8 @@ const gulpIsort = (paramOptions) => {
     if (code) {
       if (code === 'ENOENT' || COMMAND_NOT_FOUND === code) {
         msg = `${executable} could not be found`;
-      } else {
-        if (code !== 1) {
-          msg = `isort exited with code ${code}`;
-        }
+      } else if (code !== 1) {
+        msg = `isort exited with code ${code}`;
       }
     }
     if (msg) {
@@ -167,7 +169,7 @@ gulpIsort.failAfterError = () => through.obj((result, enc, cb) => {
   cb(new gulpUtil.PluginError(
     'gulp-isort',
     {
-      name: 'isortError',
+      name: 'isortError-dev',
       message: `Failed with ${count}${(count === 1 ? ' error' : ' errors')}`,
     }
   ));
